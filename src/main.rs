@@ -101,7 +101,16 @@ async fn download_media(media: &MediaResponse, destination: &Path, client: &Clie
 }
 
 fn print_help_and_exit() -> ! {
-    let help = "Run with a single argument that is an imgur album url or the album id.";
+    let help = 
+"Usage: imgur-downloader URL
+   or: imgur-downloader ALBUMID
+   or: imgur-downloader GALLERYID
+   or: imgur-downloader [--help]
+
+Download all images from an Imgur album/gallery. The ALBUMID/GALLERYID is the last part of the URL
+like the following: \"https://imgur.com/gallery/GALLERYID\" or \"https://imgur.com/a/ALBUMID\". All
+images will be saved in a folder with the same name as GALLERYID of ALBUMID, numbered in order of
+appearence in the album/gallery.";
     println!("{}", help);
     std::process::exit(1);
 }
