@@ -1,8 +1,10 @@
-// TODO:
-// * better argument parsing and more arguments (target directory, concurrent number)
-// * better error messages
-// * maybe try using HEAD request to determine size of media instead of the json size field because
-//   the latter is sometimes incorrect.
+/*
+TODO:
+- better argument parsing and more arguments (target directory, concurrent number of requests)
+- better error messages
+- Try using HEAD request to determine size of media instead of the json size field because
+  the latter is sometimes incorrect.
+*/
 
 use anyhow::{anyhow, Result};
 use futures::stream::{StreamExt, TryStreamExt};
