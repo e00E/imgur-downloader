@@ -29,6 +29,12 @@ fn extract_album_id_from_argument(s: &str) -> Option<&str> {
     None
 }
 
+fn parse_album_argument(s: &str) -> Result<String> {
+    extract_album_id_from_argument(s)
+        .map(str::to_string)
+        .ok_or_else(|| anyhow!("invalid album"))
+}
+
 #[derive(Debug, Deserialize)]
 struct AlbumResponse {
     media: Vec<MediaResponse>,
@@ -111,8 +117,9 @@ struct Args {
     ///
     /// Examples:
     /// - vNOUshX
+    /// - https://imgur.com/a/vNOUshX
     /// - https://imgur.com/gallery/vNOUshX
-    #[clap(verbatim_doc_comment)]
+    #[clap(verbatim_doc_comment, parse(try_from_str = parse_album_argument))]
     album: String,
 }
 
@@ -126,8 +133,7 @@ fn main() -> Result<()> {
 }
 
 async fn main_(args: Args) -> Result<()> {
-    let album_id = extract_album_id_from_argument(args.album.as_str())
-        .ok_or_else(|| anyhow!("failed to extract album id from first argument"))?;
+    let album_id = args.album.as_str();
     let client = Client::builder()
         .build()
         .context("failed to create reqwest client")?;
@@ -172,11 +178,11 @@ mod tests {
     #[test]
     fn extract_album_id_() {
         assert_eq!(
-            extract_album_id_from_argument("https://imgur.com/gallery/aA1b"),
+            extract_album_id_from_argument("https://imgur.com/gallery/vNOUshX"),
             Some("aA1b")
         );
         assert_eq!(
-            extract_album_id_from_argument("https://imgur.com/a/aA1b"),
+            extract_album_id_from_argument("https://imgur.com/a/vNOUshX"),
             Some("aA1b")
         );
         assert_eq!(extract_album_id_from_argument("aA1b"), Some("aA1b"));
