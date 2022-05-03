@@ -31,7 +31,6 @@ fn extract_album_id_from_argument(s: &str) -> Option<&str> {
 
 #[derive(Debug, Deserialize)]
 struct AlbumResponse {
-    url: String,
     media: Vec<MediaResponse>,
 }
 
