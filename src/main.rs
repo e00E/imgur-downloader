@@ -85,7 +85,7 @@ async fn download_media(media: &MediaResponse, destination: &Path, client: &Clie
         .await?;
     if media.size == file.metadata().await?.len() {
         println!(
-            "Skipping {} because it already exists and the file size is correct.",
+            "Skipping {} because it has already been downloaded.",
             media.url
         );
         return Ok(());
@@ -123,9 +123,8 @@ async fn main() -> Result<()> {
     fs::create_dir_all(destination).await?;
     let media_count = album.media.len();
     println!(
-        "Downloading {} media from album id {} to directory {}.",
+        "Downloading {} files to directory {}.",
         media_count,
-        album_id,
         destination.to_string_lossy(),
     );
 
