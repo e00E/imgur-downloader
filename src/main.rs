@@ -6,7 +6,7 @@ TODO:
   the latter is sometimes incorrect.
 */
 
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use clap::Parser;
 use futures::stream::{StreamExt, TryStreamExt};
 use reqwest::Client;
@@ -121,15 +121,16 @@ fn main() -> Result<()> {
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
-        .unwrap()
+        .context("failed to create tokio runtime")?
         .block_on(main_(args))
 }
 
 async fn main_(args: Args) -> Result<()> {
     let album_id = extract_album_id_from_argument(args.album.as_str())
         .ok_or_else(|| anyhow!("failed to extract album id from first argument"))?;
-
-    let client = Client::builder().build()?;
+    let client = Client::builder()
+        .build()
+        .context("failed to create reqwest client")?;
     println!("Retrieving album information for id {}.", album_id);
     let album = get_album(album_id, &client).await?;
     let destination = Path::new(album_id);
