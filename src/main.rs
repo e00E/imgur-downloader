@@ -7,13 +7,11 @@ TODO:
 */
 
 use anyhow::{anyhow, Result};
+use clap::Parser;
 use futures::stream::{StreamExt, TryStreamExt};
 use reqwest::Client;
 use serde::Deserialize;
-use std::{
-    env,
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
 use tokio::{fs, io};
 
 fn is_ascii_alphanumeric(s: &str) -> bool {
@@ -101,26 +99,34 @@ async fn download_media(media: &MediaResponse, destination: &Path, client: &Clie
     Ok(())
 }
 
-fn print_help_and_exit() -> ! {
-    let help = "Provide a single command line argument that is either an imgur album id or the full url to the album.";
-    println!("{}", help);
-    std::process::exit(1);
+/// download imgur albums and galleries
+///
+/// The album is downloaded into a directory named after the album id.
+/// Files are named after their position in the album.
+/// Existing files are skipped if they have the correct size as reported by imgur.
+#[derive(Debug, Parser)]
+#[clap(version)]
+struct Args {
+    /// the album or gallery id or full url
+    ///
+    /// Examples:
+    /// - vNOUshX
+    /// - https://imgur.com/gallery/vNOUshX
+    #[clap(verbatim_doc_comment)]
+    album: String,
 }
 
 fn main() -> Result<()> {
+    let args = Args::parse();
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
         .unwrap()
-        .block_on(main_())
+        .block_on(main_(args))
 }
 
-async fn main_() -> Result<()> {
-    let args = env::args().collect::<Vec<_>>();
-    if args.len() != 2 || args[1] == "--help" {
-        print_help_and_exit();
-    }
-    let album_id = extract_album_id_from_argument(args[1].as_str())
+async fn main_(args: Args) -> Result<()> {
+    let album_id = extract_album_id_from_argument(args.album.as_str())
         .ok_or_else(|| anyhow!("failed to extract album id from first argument"))?;
 
     let client = Client::builder().build()?;

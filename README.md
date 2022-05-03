@@ -1,9 +1,28 @@
-A command line application to download an imgur albums. Written in Rust.
+Imgur album downloader written in Rust.
 
-Takes one command line argument. This can be a full imgur album url or just the album id. Imgur galleries also work.
+```
+imgur-downloader 0.1.0
+download imgur albums and galleries
 
-Creates a new folder with the id of the album and downloads all files of the album into the folder. Files are named by their position in the album with leading zeroes.
+The album is downloaded into a directory named after the album id. Files are named after their
+position in the album. Existing files are skipped if they have the correct size as reported by
+imgur.
 
-If a file already exists and the size matches what imgur reports then the file is not downloaded again. This is useful when a previous run was interrupted.
+USAGE:
+    imgur-downloader <ALBUM>
 
-Why? Imgur does have a "download zip" button but for many albums it errors with "download link expired".
+ARGS:
+    <ALBUM>
+            the album or gallery id or full url
+
+            Examples:
+            - vNOUshX
+            - https://imgur.com/gallery/vNOUshX
+
+OPTIONS:
+    -h, --help
+            Print help information
+
+    -V, --version
+            Print version information
+```
