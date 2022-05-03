@@ -107,8 +107,15 @@ fn print_help_and_exit() -> ! {
     std::process::exit(1);
 }
 
-#[tokio::main(flavor = "current_thread")]
-async fn main() -> Result<()> {
+fn main() -> Result<()> {
+    tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(main_())
+}
+
+async fn main_() -> Result<()> {
     let args = env::args().collect::<Vec<_>>();
     if args.len() != 2 || args[1] == "--help" {
         print_help_and_exit();
