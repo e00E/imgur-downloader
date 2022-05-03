@@ -101,7 +101,7 @@ async fn download_media(media: &MediaResponse, destination: &Path, client: &Clie
 }
 
 fn print_help_and_exit() -> ! {
-    let help = "Run with a single argument that is an imgur album url or the album id.";
+    let help = "Provide a single command line argument that is either an imgur album id or the full url to the album.";
     println!("{}", help);
     std::process::exit(1);
 }
